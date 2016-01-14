@@ -154,7 +154,8 @@ describe 'client.itemLookup(query, cb)', ->
       it 'should work with custom domain', ->
         client.itemLookup
           idType: 'UPC',
-          itemId: '889030012227'
+          itemId: '889030012227',
+          domain: 'webservices.amazon.co.uk'
         .then (results) ->
           results.should.be.an.Array
 
@@ -216,8 +217,9 @@ describe 'client.browseNodeLookup(query, cb)', ->
 
       it 'should work with custom domain', ->
         client.browseNodeLookup
-          browseNodeId: '549726',
-          responseGroup: 'NewReleases'
+          browseNodeId: '62',
+          responseGroup: 'NewReleases',
+          domain: 'webservices.amazon.co.uk'
         .then (results) ->
           results.should.be.an.Array
 
@@ -225,7 +227,6 @@ describe 'client.browseNodeLookup(query, cb)', ->
       it 'should return search results from amazon', ->
         client.browseNodeLookup {browseNodeId: '549726', responseGroup: 'NewReleases'}, (err, results) ->
           results.should.be.an.Array
-
 
   describe 'when credentials are invalid', ->
     client = amazonProductApi.createClient awsTag: 'sfsadf', awsId: 'sfadf', awsSecret: 'fsg'
@@ -245,4 +246,87 @@ describe 'client.browseNodeLookup(query, cb)', ->
         client.browseNodeLookup {browseNodeId: '549726', responseGroup: 'NewReleases'}, (err, results) ->
           err.should.be.an.Object
           err.should.have.property 'Error'
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+describe 'client.cartCreate(query, cb)', ->
+
+  describe 'when credentials are valid', ->
+    client = amazonProductApi.createClient credentials
+
+    describe 'when no callback is passed', ->
+      it 'should return a new cart from amazon', ->
+        client.cartCreate
+          'item.1.OfferListingId': '%2F0AHP9%2B9vRmJJccH2eG%2FYrP9sK2gTVxdbb4faNOJt%2B%2B1xfs0sgW0wo%2F0yvQpgl8BzAUQeRGQmUzBp2L5mnb224eKzg3v%2FWSBCvN%2B17y2shRgCoYd%2BSkfOVBprkdJyahYJ0RYSPBRffgHmMAFr8CTDg%3D%3D',
+          'item.1.Quantity': 1
+        .then (results) ->
+          results.should.be.an.Array
+
+      it 'should work with custom domain', ->
+        client.cartCreate
+          'item.1.OfferListingId': 'mVnouPhU%2BH0ohs3AkqglRCMzlVRcoLTJsWPIHGyP5GZ58zlnGCBtRBsSZQTrTwLCMzEfXVFC%2BQ2SXyKV3H85mM6Zq2Mxjgyyr7159c3eE8L8QGCz4yFScQpDkrQ5SIakVO%2FQu1ifo5BcrXccnccp3A%3D%3D',
+          'item.1.Quantity': 1,
+          domain: 'webservices.amazon.co.uk'
+        .then (results) ->
+          results.should.be.an.Array
+
+    describe 'when callback is passed', ->
+      it 'should return a new cart from amazon', ->
+        client.cartCreate {'item.1.OfferListingId': '%2F0AHP9%2B9vRmJJccH2eG%2FYrP9sK2gTVxdbb4faNOJt%2B%2B1xfs0sgW0wo%2F0yvQpgl8BzAUQeRGQmUzBp2L5mnb224eKzg3v%2FWSBCvN%2B17y2shRgCoYd%2BSkfOVBprkdJyahYJ0RYSPBRffgHmMAFr8CTDg%3D%3D', 'item.1.Quantity': 1}, (err, results) ->
+          results.should.be.an.Array
+
+
+  describe 'when credentials are invalid', ->
+    client = amazonProductApi.createClient awsTag: 'sfsadf', awsId: 'sfadf', awsSecret: 'fsg'
+
+    describe 'when no callback is passed', ->
+      it 'should return an error', ->
+        client.cartCreate
+          'item.1.OfferListingId': '%2F0AHP9%2B9vRmJJccH2eG%2FYrP9sK2gTVxdbb4faNOJt%2B%2B1xfs0sgW0wo%2F0yvQpgl8BzAUQeRGQmUzBp2L5mnb224eKzg3v%2FWSBCvN%2B17y2shRgCoYd%2BSkfOVBprkdJyahYJ0RYSPBRffgHmMAFr8CTDg%3D%3D',
+          'item.1.Quantity': 1
+        .catch (err) ->
+          err.should.be.an.Object
+          err.should.have.property 'Error'
+
+
+    describe 'when callback is passed', ->
+      it 'should return an error', (done) ->
+        client.cartCreate {'item.1.OfferListingId': 'InvalidOfferListing', 'item.1.Quantity': 1}, (err, results) ->
+          err.should.be.an.Object
+          err.should.have.property 'Error'
+          done()
+
+  describe 'when the request returns an error', ->
+    client = amazonProductApi.createClient credentials
+
+    describe 'when no callback is passed', ->
+      it 'should return the errors inside the request node', ->
+        client.cartCreate
+          'item.1.OfferListingId': '%2F0AHP9%2B9vRmJJccH2eG%2FYrP9sK2gTVxdbb4faNOJt%2B%2B1xfs0sgW0wo%2F0yvQpgl8BzAUQeRGQmUzBp2L5mnb224eKzg3v%2FWSBCvN%2B17y2shRgCoYd%2BSkfOVBprkdJyahYJ0RYSPBRffgHmMAFr8CTDg%3D%3D',
+          'item.1.Quantity': 1
+        .catch (err) ->
+          err.should.be.an.Array
+
+    describe 'when callback is passed', ->
+      it 'should return the errors inside the request node', ->
+        client.itemLookup {'item.1.OfferListingId': '%2F0AHP9%2B9vRmJJccH2eG%2FYrP9sK2gTVxdbb4faNOJt%2B%2B1xfs0sgW0wo%2F0yvQpgl8BzAUQeRGQmUzBp2L5mnb224eKzg3v%2FWSBCvN%2B17y2shRgCoYd%2BSkfOVBprkdJyahYJ0RYSPBRffgHmMAFr8CTDg%3D%3D', 'item.1.Quantity': 1}, (err, results) ->
+          err.should.be.an.Array
           done()
